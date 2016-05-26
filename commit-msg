@@ -21,8 +21,10 @@ for my $idx (reverse 0..$#array_msg) {
 # Get rest of the body
 my $body = join("\n", @array_msg[ 2 .. $#array_msg ]);
 
-# Matches: "$type: $word $words+" - with at least three words
-if ("$first_line" !~ /^\S+: \S+(\s\S+){2,}$/) {
+# If not a merge, matches: "$type: $word $words+" - with at least three words
+if ("$first_line" =~ /^Merge branch/) {
+	$return_code = 0;
+} elsif ("$first_line" !~ /^\w+: \S+(\s\S+){2,}$/) {
         print "First line should be: <item>: <title> (at least 3 words)\n";
 	if ( substr("$first_line", -1) =~ /\s/ ) {
 		print "First line cannot end with a space: [$first_line]\n"
