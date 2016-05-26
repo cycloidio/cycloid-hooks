@@ -1,21 +1,26 @@
 #!/bin/bash
 
 # Modify those variables with your path
-CYCLOID_DIR="$HOME/git/cycloid/"
+GIT_DIR="$HOME/git/work/"
 TEMPLATE_HOOK_DIR="$HOME/.git_template/hooks/"
 
+FIND_BIN=$(which find)
+RM_BIN=$(which rm)
+GIT_BIN=$(which git)
+DIRNAME_BIN=$(which dirname)
+BASENAME_BIN=$(which basename)
+
 HOOKS=$(ls -1 ${TEMPLATE_HOOK_DIR})
-PATHS=$(find ${CYCLOID_DIR} -maxdepth 2 -iname '.git' -type d)
+PATHS=$(${FIND_BIN} ${GIT_DIR} -maxdepth 2 -iname '.git' -type d)
 
 for PATH in $(echo ${PATHS})
 do
 	for HOOK in $(echo "${HOOKS}")
 	do
-		/usr/bin/find ${PATH} -name ${HOOK} -type f # -delete
-		echo "Removing ${PATH}/hooks/${HOOK}"
+		if [ -f "${PATH}/hooks/${HOOK}" ]; then
+			${RM_BIN} "${PATH}/hooks/${HOOK}"
+		fi
 	done
-	echo "Updating repository with new template"
-	echo "cd ${PATH} && git init && cd -"
-	echo ""
+	${GIT_BIN} init $(${DIRNAME_BIN} ${PATH}) > /dev/null
 done
 
