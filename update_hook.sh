@@ -83,3 +83,4 @@ do
 	[ ${VERBOSE} -eq 1 ] && echo "Done!"
 done
 
+exit 0
