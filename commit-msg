@@ -34,7 +34,7 @@ if ("$first_line" !~ /^\w+: \S+(\s\S+){2,}$/) {
         print "Second line should be empty.\n";
         print "Second line is: [$second_line]\n";
 	$return_code = 1;
-} elsif ("$body" !~ /\S+(\s\S+){15,}$/) {
+} elsif ("$body" !~ /\S+(\s+\S+){15,}\s*$/) {
 	print "Body should have at least 15 words.\n";
 	my $num = 0;
 	$num++ while $body =~ /\S+/g;
