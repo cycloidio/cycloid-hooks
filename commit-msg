@@ -23,8 +23,12 @@ my $body = join("\n", @array_msg[ 2 .. $#array_msg ]);
 
 # Matches: "$type: $word $words+" - with at least three words
 if ("$first_line" !~ /^\w+: \S+(\s\S+){2,}$/) {
-        print "First line should be: \$type: at least 3 words\n";
-        print "First line is: [$first_line]\n";
+        print "First line should be: <item>: <title> (at least 3 words)\n";
+	if ( substr("$first_line", -1) =~ /\s/ ) {
+		print "First line cannot end with a space: [$first_line]\n"
+	} else {
+		print "First line is: [$first_line]\n";
+	}
 	$return_code = 1;
 } elsif ("$second_line" !~ /^$/) {
         print "Second line should be empty.\n";
