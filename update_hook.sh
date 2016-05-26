@@ -70,16 +70,16 @@ PATHS=$(${FIND_BIN} ${GIT_DIR} -maxdepth 2 -iname '.git' -type d)
 
 for PATH in $(echo ${PATHS})
 do
-	[ ${VERBOSE} ] && echo "Updating $(${BASENAME_BIN} $(${DIRNAME_BIN} ${PATH}))..."
+	[ ${VERBOSE} -eq 1 ] && echo "Updating $(${BASENAME_BIN} $(${DIRNAME_BIN} ${PATH}))..."
 	for HOOK in $(echo "${HOOKS}")
 	do
 		if [ -f "${PATH}/hooks/${HOOK}" ]; then
-			[ ${VERBOSE} ] && echo -e "\tFound ${HOOK}, deleting it"
+			[ ${VERBOSE} -eq 1 ] && echo -e "\tFound ${HOOK}, deleting it"
 			${RM_BIN} "${PATH}/hooks/${HOOK}"
 		fi
 	done
-	[ ${VERBOSE} ] && echo -e "\tUsing latest template $(${DIRNAME_BIN} ${PATH})"
+	[ ${VERBOSE} -eq 1 ] && echo -e "\tUsing latest template $(${DIRNAME_BIN} ${PATH})"
 	${GIT_BIN} init $(${DIRNAME_BIN} ${PATH}) > /dev/null
-	[ ${VERBOSE} ] && echo "Done!"
+	[ ${VERBOSE} -eq 1 ] && echo "Done!"
 done
 
