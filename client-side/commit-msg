@@ -1,4 +1,31 @@
 #!/usr/bin/perl
+#
+# This hook checks the syntax of git commit messages before they are commited.
+#
+# Commits done to merge branches are ignored.
+# Other commit messages should respect the following schema:
+#   <type>: <title>
+#   <new_line>
+#   <body>
+#
+# <type>: represents what you're working on: file (if unique), feature name,
+# component etc. Type such as: fix/feat/etc are passing but not advised for
+# readability purposes - but this is up to you.
+#
+# <title>: a short description of the modification, at least 3 words.
+# The space after the colon has to be respected and no space at the end is allowed.
+#
+# <body>: should be a description of the change: context, why, how, etc. Any relevent
+# information should be there, and allow to understand your commit just by the message.
+#
+# It is advised to provide link of other commits, of mailing-list etc if need be.
+# The body should be at least 15 words.
+#
+#
+# This hook should not create too much constrain on commit message, but simply encourage
+# to use the structure previously explained. It is up to every-one to use it or not, and
+# can be easily by-passed with a 'git commit --no-verify' or -n.
+#
 
 use warnings;
 use strict;
