@@ -71,4 +71,12 @@ if ("$first_line" =~ /^Merge branch/) {
 	$return_code = 1;
 }
 
+if ($return_code == 1) {
+	print "Message rejected, full message was:\n";
+	print "##########################################\n";
+	print "$first_line\n";
+	print "$second_line\n";
+	print "$body\n";
+}
+
 exit $return_code;
