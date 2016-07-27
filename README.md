@@ -13,10 +13,17 @@ Gathering of hooks used at cycloid
 [pre-commit-gofmt](https://github.com/cycloidio/cycloid-hooks/blob/master/client-side/pre-commit.d/pre-commit-gofmt): Meant to check the formatting of go files before pushing them.
 
 # How to use
-Create a template directory for git that you will use:
+If not already the case, create a template directory for git that you will use:
 ```bash
 mkdir -p $HOME/.git_template/hooks/
 ```
+
+(Again if not already the case) Update your gitconfig:
+```bash
+[init]
+	templatedir = /path/to/your_git_template/
+```
+Note: This is the full path, not including env variable!
 
 Get the repository with the eventual branch that you want:
 ```bash
