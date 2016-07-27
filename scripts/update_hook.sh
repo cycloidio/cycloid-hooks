@@ -64,21 +64,29 @@ RM_BIN=$(which rm)
 GIT_BIN=$(which git)
 DIRNAME_BIN=$(which dirname)
 BASENAME_BIN=$(which basename)
+MD5SUM_BIN=$(which md5sum)
+AWK_BIN=$(which awk)
 
-HOOKS=$(ls -1 ${TEMPLATE_HOOK_DIR})
-PATHS=$(${FIND_BIN} ${GIT_DIR} -maxdepth 2 -iname '.git' -type d)
+HOOKS=$(cd ${TEMPLATE_HOOK_DIR}; ${FIND_BIN} ./ -type f | sed 's/\.\///'; cd -)
+PATHS=$(${FIND_BIN} -L ${GIT_DIR} -maxdepth 2 -iname '.git' -type d)
 
 for PATH in $(echo ${PATHS})
 do
 	[ ${VERBOSE} -eq 1 ] && echo "Updating $(${BASENAME_BIN} $(${DIRNAME_BIN} ${PATH}))..."
 	for HOOK in $(echo "${HOOKS}")
 	do
-		if [ -f "${PATH}/hooks/${HOOK}" ]; then
-			[ ${VERBOSE} -eq 1 ] && echo -e "\tFound ${HOOK}, deleting it"
-			${RM_BIN} "${PATH}/hooks/${HOOK}"
+		if [ -e "${PATH}/hooks/${HOOK}" ]; then
+			OLD_HASH=$(${MD5SUM_BIN} ${PATH}/hooks/${HOOK} | ${AWK_BIN} '{print $1}')
+			NEW_HASH=$(${MD5SUM_BIN} ${TEMPLATE_HOOK_DIR}/${HOOK} | ${AWK_BIN} '{print $1}')
+			if [ "${OLD_HASH}" != "${NEW_HASH}" ]; then
+				[ ${VERBOSE} -eq 1 ] && echo -e "\tFound ${HOOK}, deleting it"
+				${RM_BIN} -rf "${PATH}/hooks/${HOOK}"
+			else
+				[ ${VERBOSE} -eq 1 ] && echo -e "\tFound ${HOOK}, didn't change"
+			fi
 		fi
 	done
-	[ ${VERBOSE} -eq 1 ] && echo -e "\tUsing latest template $(${DIRNAME_BIN} ${PATH})"
+	[ ${VERBOSE} -eq 1 ] && echo -e "\t$(${DIRNAME_BIN} ${PATH}) is using the latest template"
 	${GIT_BIN} init $(${DIRNAME_BIN} ${PATH}) > /dev/null
 	[ ${VERBOSE} -eq 1 ] && echo "Done!"
 done
