@@ -20,7 +20,7 @@
 # information should be there, and allow to understand your commit just by the message.
 #
 # It is advised to provide link of other commits, of mailing-list etc if need be.
-# The body should be at least 15 words.
+# The body should be at least 5 words.
 #
 #
 # This hook should not create too much constrain on commit message, but simply encourage
@@ -59,8 +59,8 @@ if ("$first_line" =~ /^Merge branch/) {
         print "Second line should be empty.\n";
         print "Second line is: [$second_line]\n";
 	$return_code = 1;
-} elsif ("$body" !~ /\S+(\s+\S+){15,}\s*$/) {
-	print "Body should have at least 15 words.\n";
+} elsif ("$body" !~ /\S+(\s+\S+){5,}\s*$/) {
+	print "Body should have at least 5 words.\n";
 	my $num = 0;
 	$num++ while $body =~ /\S+/g;
 	print "Body has $num words currently.\n";
