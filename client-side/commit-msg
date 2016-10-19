@@ -13,7 +13,8 @@
 # readability purposes - but this is up to you.
 #
 # <title>: a short description of the modification, at least 3 words.
-# The space after the colon has to be respected and no space at the end is allowed.
+#
+# N.B.: The space after the colon has to be respected.
 #
 # <body>: should be a description of the change: context, why, how, etc. Any relevent
 # information should be there, and allow to understand your commit just by the message.
@@ -51,13 +52,8 @@ my $body = join("\n", @array_msg[ 2 .. $#array_msg ]);
 # If not a merge, matches: "$type: $word $words+" - with at least three words
 if ("$first_line" =~ /^Merge branch/) {
 	$return_code = 0;
-} elsif ("$first_line" !~ /^\S+: \S+(\s\S+){2,}$/) {
+} elsif ("$first_line" !~ /^\S+: \S+(\s\S+){2,}(\s)?$/) {
         print "First line should be: <item>: <title> (at least 3 words)\n";
-	if ( substr("$first_line", -1) =~ /\s/ ) {
-		print "First line cannot end with a space: [$first_line]\n"
-	} else {
-		print "First line is: [$first_line]\n";
-	}
 	$return_code = 1;
 } elsif ("$second_line" !~ /^$/) {
         print "Second line should be empty.\n";
