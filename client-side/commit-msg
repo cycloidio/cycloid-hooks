@@ -37,7 +37,7 @@ my @array_msg = split("\n", $commit_msg);
 
 # Get first 2 lines of git message
 my $first_line = $array_msg[0];
-my $second_line = $array_msg[1];
+my $second_line = $array_msg[1] || '';
 
 # Remove commented lines from git message
 for my $idx (reverse 0..$#array_msg) {
