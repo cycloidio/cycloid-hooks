@@ -23,19 +23,26 @@ mkdir -p $HOME/.git_template/hooks/
 (Again if not already the case) Update your gitconfig:
 ```bash
 [init]
-	templatedir = /path/to/your_git_template/
+	templatedir = </home/.../.git_template>
 ```
 Note: This is the full path, not including env variable!
 
 Get the repository with the eventual branch that you want:
 ```bash
-git clone https://github.com/cycloidio/cycloid-hooks/ $HOME/git/
-# if you want another branch (e.g. for testing purposes)
-BRANCH=master
-git checkout $BRANCH
+git clone https://github.com/cycloidio/cycloid-hooks/ $HOME/git/cycloid-hooks/
 ```
 
 Then, the easiest could be to setup an alias based on the script in order to do the updates.
+
+Example of alias - admitting your git repositorie(s) is(are) located in `$HOME/git/my-git-projects` directory:
+
+```bash
+alias update_hooks='rsync -arq $HOME/git/cycloid-hooks/client-side/ $HOME/.git_template/hooks/ && $HOME/git/cycloid-hooks/scripts/update_hook.sh -v -t $HOME/.git_template/hooks -r $HOME/git/my-git-projects'
+
+# Now you can call it with
+update_hooks
+```
+
 Usage of the script:
 ```bash
 usage: update_hook.sh -r GIT_DIR -t TEMPLATE_HOOK_DIR [-v]
@@ -47,11 +54,6 @@ OPTIONS:
    -r       Directory containing all repositories
    -t       Template directory containing hooks
    -v       Verbose enablement
-```
-
-Example of alias - admitting your project(s) is(are) located in $HOME/git/my-git-projects:
-```bash
-alias update_hooks='rsync -arq $HOME/git/cycloid-hooks/client-side/ $HOME/.git_template/hooks/ && $HOME/git/cycloid-hooks/scripts/update_hook.sh -r $HOME/git/my-git-projects -t $HOME/.git_template/hooks'
 ```
 
 # License
