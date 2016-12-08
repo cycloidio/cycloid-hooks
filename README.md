@@ -12,6 +12,8 @@ Gathering of hooks used at cycloid
 
 [pre-commit-gofmt](https://github.com/cycloidio/cycloid-hooks/blob/master/client-side/pre-commit.d/pre-commit-gofmt): Meant to check the formatting of go files before pushing them.
 
+[pre-push](https://github.com/cycloidio/cycloid-hooks/blob/master/client-side/pre-push): Used as safety net to check if any ansible vault file has been localy commited before being pushed. Very similar to [pre-commit-ansible-vault](https://github.com/cycloidio/cycloid-hooks/blob/master/client-side/pre-commit.d/pre-commit-ansible-vault).
+
 # How to use
 If not already the case, create a template directory for git that you will use:
 ```bash
