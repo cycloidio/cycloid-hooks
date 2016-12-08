@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# Pre-push hook that verifies if all files containing 'vault' in the name
+# are encrypted. If not, push will fail with an error message
+#
+# File should be .git/hooks/pre-push and executable
+#
+# This hook is a very similar to the pre-commit hook
+#
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+UNPUSHED_COMMITS=$(git log origin/${BRANCH}..HEAD --pretty=format:"%h")
+FILES_PATTERN='.*vault.*\.yml$'
+REQUIRED='ANSIBLE_VAULT'
+
+EXIT_STATUS=0
+WHITE="\e[1m\033[0m"
+YELLOW='\e[1;33m'
+# carriage return hack. Leave it on 2 lines.
+CR='
+'
+
+for commit in ${UNPUSHED_COMMITS}
+do
+  for file in $(git diff-tree --no-commit-id --name-only -r ${commit} | grep -E ${FILES_PATTERN})
+  do
+    # Check header of the file at the specific commit
+    MATCH=$(git show ${commit}:${file} | head -n1 | grep --no-messages ${REQUIRED})
+    if [ ! ${MATCH} ] ; then
+      # Build the list of unencrypted files if any with commit id
+      UNENCRYPTED_FILES="${file} - ${commit}${CR}${UNENCRYPTED_FILES}"
+      EXIT_STATUS=1
+    fi
+  done
+done
+
+if [ ! ${EXIT_STATUS} = 0 ] ; then
+  echo '# PUSH REJECTED !'
+  echo '# Looks like unencrypted ansible-vault files are part of commits:'
+  echo '#'
+  while read -r line; do
+    if [ -n "${line}" ]; then
+      echo -e "#\t${YELLOW}unencrypted:   ${line}${WHITE}"
+    fi
+  done <<< "${UNENCRYPTED_FILES}"
+  echo '#'
+  echo "# Please encrypt them with 'ansible-vault encrypt <file>' before pushing"
+fi
+
+exit ${EXIT_STATUS}
