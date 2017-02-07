@@ -10,7 +10,7 @@
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 UNPUSHED_COMMITS=$(git log origin/${BRANCH}..HEAD --pretty=format:"%h")
-FILES_PATTERN='.*vault.*\.yml$'
+FILES_PATTERN='.*concourse-variables|vault.*\.yml$'
 REQUIRED='ANSIBLE_VAULT'
 
 EXIT_STATUS=0
