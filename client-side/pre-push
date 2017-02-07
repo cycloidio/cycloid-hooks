@@ -9,7 +9,7 @@
 #
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-UNPUSHED_COMMITS=$(git log origin/${BRANCH}..HEAD --pretty=format:"%h")
+UNPUSHED_COMMITS=$(git log --pretty=format:"%h" -- "origin/${BRANCH}..HEAD")
 FILES_PATTERN='.*vault.*\.yml$'
 REQUIRED='ANSIBLE_VAULT'
 
