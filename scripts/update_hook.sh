@@ -15,24 +15,32 @@ This allows to easily update hooks to use their latest version.
 OPTIONS:
    -r       Directory containing all repositories
    -t       Template directory containing hooks
+   -c       Create files (instead of using "git init")
    -v       Verbose enablement
 
-Example:
+The -c option allows keeping hooks out of the git global templatedir.
+
+Examples:
    $0 -r $HOME/git/work/ -t $HOME/.git_template/hooks/ -v
+   $0 -r $HOME/git/work/ -t $HOME/git/work/cycloid-hooks/client-side/ -v -c
 EOF
 }
 
 GIT_DIR=""
 TEMPLATE_HOOK_DIR=""
 VERBOSE=0
+CREATE=0
 
-while getopts "vt:r:h" opt; do
+while getopts "cvt:r:h" opt; do
   case $opt in
     r)
       GIT_DIR=$OPTARG
       ;;
     t)
       TEMPLATE_HOOK_DIR=$OPTARG
+      ;;
+    c)
+      CREATE=1
       ;;
     v)
       VERBOSE=1
@@ -59,6 +67,8 @@ if [ ! -d "${TEMPLATE_HOOK_DIR}" ]; then
 	exit 1
 fi
 
+CP_BIN=$(which cp)
+MKDIR_BIN=$(which mkdir)
 FIND_BIN=$(which find)
 RM_BIN=$(which rm)
 GIT_BIN=$(which git)
@@ -79,15 +89,29 @@ do
 			OLD_HASH=$(${MD5SUM_BIN} ${PATH}/hooks/${HOOK} | ${AWK_BIN} '{print $1}')
 			NEW_HASH=$(${MD5SUM_BIN} ${TEMPLATE_HOOK_DIR}/${HOOK} | ${AWK_BIN} '{print $1}')
 			if [ "${OLD_HASH}" != "${NEW_HASH}" ]; then
-				[ ${VERBOSE} -eq 1 ] && echo -e "\tFound ${HOOK}, deleting it"
-				${RM_BIN} -rf "${PATH}/hooks/${HOOK}"
+                if [ $CREATE -eq 1 ]
+                then
+				    [ ${VERBOSE} -eq 1 ] && echo -e "\tFound ${HOOK}, replacing it"
+				    ${CP_BIN} "${TEMPLATE_HOOK_DIR}/${HOOK}" "${PATH}/hooks/${HOOK}"
+                else
+				    [ ${VERBOSE} -eq 1 ] && echo -e "\tFound ${HOOK}, deleting it"
+				    ${RM_BIN} -rf "${PATH}/hooks/${HOOK}"
+                fi
 			else
 				[ ${VERBOSE} -eq 1 ] && echo -e "\tFound ${HOOK}, didn't change"
 			fi
+        elif [ $CREATE -eq 1 ]
+        then
+            [ ${VERBOSE} -eq 1 ] && echo -e "\t${HOOK} not found, creating it"
+            ${MKDIR_BIN} -p $(${DIRNAME_BIN} ${PATH}/hooks/${HOOK})
+	        ${CP_BIN} "${TEMPLATE_HOOK_DIR}/${HOOK}" "${PATH}/hooks/${HOOK}"
 		fi
 	done
-	[ ${VERBOSE} -eq 1 ] && echo -e "\t$(${DIRNAME_BIN} ${PATH}) is using the latest template"
-	${GIT_BIN} init $(${DIRNAME_BIN} ${PATH}) > /dev/null
+    if [ $CREATE -eq 0 ]
+    then
+    	[ ${VERBOSE} -eq 1 ] && echo -e "\t$(${DIRNAME_BIN} ${PATH}) is using the latest template"
+	    ${GIT_BIN} init $(${DIRNAME_BIN} ${PATH}) > /dev/null
+    fi
 	[ ${VERBOSE} -eq 1 ] && echo "Done!"
 done
 
