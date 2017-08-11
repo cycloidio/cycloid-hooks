@@ -67,7 +67,7 @@ BASENAME_BIN=$(which basename)
 MD5SUM_BIN=$(which md5sum)
 AWK_BIN=$(which awk)
 
-HOOKS=$(cd ${TEMPLATE_HOOK_DIR}; ${FIND_BIN} ./ -type f | sed 's/\.\///'; cd -)
+HOOKS=$(cd ${TEMPLATE_HOOK_DIR}; ${FIND_BIN} ./ -type f | sed 's/\.\///')
 PATHS=$(${FIND_BIN} -L ${GIT_DIR} -maxdepth 2 -iname '.git' -type d)
 
 for PATH in $(echo ${PATHS})
