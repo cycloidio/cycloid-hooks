@@ -47,4 +47,11 @@ if [ ! ${EXIT_STATUS} = 0 ] ; then
   echo "# Please encrypt them with 'ansible-vault encrypt <file>' before pushing"
 fi
 
+if [ ${EXIT_STATUS} = 0 ] ; then
+    echo "############################"
+    echo "URL to create a pull request"
+    git remote get-url origin | sed "s|^git@github.com:|https://github.com/|;s|.git$|/compare/$(git rev-parse --abbrev-ref HEAD)?expand=1|"
+    echo "############################"
+fi
+
 exit ${EXIT_STATUS}
