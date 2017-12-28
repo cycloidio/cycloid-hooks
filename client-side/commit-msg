@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 #
 # This hook checks the syntax of git commit messages before they are commited.
 #
