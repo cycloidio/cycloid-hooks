@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # This script updates all hooks located in the TEMPLATE_HOOK_DIR of all repositories located under the GIT_DIR.
 # This allows to easily update hooks to use their latest version.

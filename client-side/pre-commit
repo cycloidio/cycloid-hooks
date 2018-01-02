@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Pre-commit hook that verifies if all files containing 'vault' in the name
 # are encrypted.
