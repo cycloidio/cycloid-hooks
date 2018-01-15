@@ -48,10 +48,15 @@ if [ ! ${EXIT_STATUS} = 0 ] ; then
 fi
 
 if [ ${EXIT_STATUS} = 0 ] ; then
-    echo "############################"
-    echo "URL to create a pull request"
-    git remote get-url origin | sed "s|^git@github.com:|https://github.com/|;s|.git$|/compare/$(git rev-parse --abbrev-ref HEAD)?expand=1|"
-    echo "############################"
+    origin="$(git remote get-url origin)"
+    # Display the PR URL only for GitHub
+    if [ "$(echo "$origin" | cut -d: -f1)" = "git@github.com" ]
+    then
+        echo "############################"
+        echo "URL to create a pull request"
+        echo "$origin" | sed "s|^git@github.com:|https://github.com/|;s|.git$|/compare/$(git rev-parse --abbrev-ref HEAD)?expand=1|"
+        echo "############################"
+    fi
 fi
 
 exit ${EXIT_STATUS}
