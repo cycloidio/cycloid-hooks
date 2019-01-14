@@ -47,16 +47,4 @@ if [ ! ${EXIT_STATUS} = 0 ] ; then
   echo "# Please encrypt them with 'ansible-vault encrypt <file>' before pushing"
 fi
 
-if [ ${EXIT_STATUS} = 0 ] ; then
-    origin="$(git remote get-url origin)"
-    # Display the PR URL only for GitHub
-    if [ "$(echo "$origin" | cut -d: -f1)" = "git@github.com" ]
-    then
-        echo "############################"
-        echo "URL to create a pull request"
-        echo "$origin" | sed "s|^git@github.com:|https://github.com/|;s|.git$|/compare/$(git rev-parse --abbrev-ref HEAD)?expand=1|"
-        echo "############################"
-    fi
-fi
-
 exit ${EXIT_STATUS}
